@@ -1,1 +1,143 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaSakhi - AI Health Companion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #6366f1;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #4f46e5;
+    }
+
+    .voice-btn {
+      margin-left: 10px;
+      background-color: #10b981;
+    }
+
+    .voice-btn:hover {
+      background-color: #059669;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #15803d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌸 NovaSakhi</h1>
+    <p class="subtitle">AI Health Companion for Rural Women</p>
+    <textarea id="symptoms" placeholder="Describe your symptoms here..."></textarea>
+    <br>
+    <button id="analyzeBtn">Analyze</button>
+    <button id="voiceBtn" class="voice-btn">🎤 Speak</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // Voice Recognition
+    const voiceBtn = document.getElementById('voiceBtn');
+    const textarea = document.getElementById('symptoms');
+    const resultDiv = document.getElementById('result');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      voiceBtn.addEventListener('click', () => {
+        recognition.start();
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        textarea.value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        alert('Voice recognition error: ' + event.error);
+      };
+    } else {
+      voiceBtn.disabled = true;
+      voiceBtn.innerText = 'Voice Not Supported';
+    }
+
+    // Simple Risk Analysis (Dummy)
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    analyzeBtn.addEventListener('click', () => {
+      const symptoms = textarea.value.toLowerCase();
+
+      let riskMessage = '';
+      if (symptoms.includes('headache') || symptoms.includes('tired')) {
+        riskMessage = '✔ LOW RISK: Stay hydrated and rest. If symptoms persist, seek medical advice.';
+      } else if (symptoms.includes('fever') || symptoms.includes('cough') || symptoms.includes('pain')) {
+        riskMessage = '⚠ MEDIUM RISK: Monitor symptoms and consider consulting a healthcare provider.';
+      } else if (symptoms.includes('severe') || symptoms.includes('bleeding') || symptoms.includes('chest pain')) {
+        riskMessage = '❌ HIGH RISK: Seek immediate medical attention!';
+      } else {
+        riskMessage = 'ℹ Please provide more details about your symptoms.';
+      }
+
+      resultDiv.innerText = riskMessage;
+    });
+  </script>
+</body>
+</html>
